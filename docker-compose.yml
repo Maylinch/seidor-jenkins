@@ -1,0 +1,22 @@
+services:
+  jenkins:
+    image: jenkins/jenkins:jdk17
+    container_name: jenkins
+    restart: always
+    ports:
+      - 8085:8080
+      - 50000:50000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - jenkins:/var/jenkins_home
+  jenkins-docker-proxy:
+    image: alpine/socat
+    restart: always
+    ports:
+      - 127.0.0.1:2376:2375
+    command: tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+volumes:
+  jenkins:
+ 
